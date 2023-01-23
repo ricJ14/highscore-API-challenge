@@ -11,7 +11,8 @@ let startButton = document.getElementById("start");
 let initialElement = document.getElementById("initials");
 let feedBackElement = document.getElementById("feedback");
 
-let sfx = new Audio("assets/sfx/correct.wav");
+let sfxCorrect = new Audio("assets/sfx/correct.wav");
+let sfxWrong = new Audio("assets/sfx/incorrect.wav");
 
 
 
@@ -39,16 +40,32 @@ function getQuestion() {
 }
 
 function questionClick() {
-    if(this.value !== questions[currentQuestionIndex].answer) {
+    if (this.value !== questions[currentQuestionIndex].answer) {
         time -= 15;
 
-        if(time < 0) {
+        if (time < 0) {
             time = 0;
         }
 
-        timerElement.textContent = "wrong"
+        timerElement.textContent = time;
+        sfxWrong.play();
+        feedBackElement.textContent = "Wrong";
     } else {
-        feedBackElement.textContent = "Correct";
+        sfxCorrect.play();
+        feedBackElement.textContent = "Correct!";
+    }
+
+    feedBackElement.setAttribute("class", "feedback");
+    setTimeout(function () {
+        feedBackElement.setAttribute("class", "feedback hide");
+    }, 1000);
+
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex === questions.length) {
+        quizEnd();
+    } else {
+        getQuestion();
     }
 }
 
@@ -87,11 +104,29 @@ function startQuiz() {
 }
 
 function saveHighScore() {
+    let initials = initialElement.value.trim();
+
+    if (initials !== "") {
+        let highScores =
+            JSON.parse(window.localStorage.getItem("highScores")) || [];
+
+        let newScore = {
+            score: time,
+            initials: initials
+        };
+
+        highScores.push(newScore);
+        window.localStorage.setItem("highScores", JSON.stringify(highScores));
+
+        window.location.href = "highscores.html";
+    }
 
 }
 
 function checkForEnter(event) {
-
+    if (event.key === "Enter") {
+        saveHighScore();
+    }
 }
 
 startButton.addEventListener("click", startQuiz);

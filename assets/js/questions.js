@@ -2,7 +2,7 @@ let questions = [
     {
         "title": "How easy do I find learning JavaScript?",
         "choices": ["easy", "challenging", "mind-wrecking" ],
-        "answers": "mind-wrecking"
+        "answer": "mind-wrecking"
     },
     {
         "title": "What else am I studying?",
